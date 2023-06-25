@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app_new/common/navigation.dart';
@@ -48,11 +49,19 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<PreferencesProvider>(builder: (context, provider, child) {
         return MaterialApp(
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              useMaterial3: true,
-            ),
+            title: 'Restaurant App',
+            theme: provider.themeData,
+            builder: (context, child) {
+              return CupertinoTheme(
+                data: CupertinoThemeData(
+                  brightness:
+                      provider.isDarkTheme ? Brightness.dark : Brightness.light,
+                ),
+                child: Material(
+                  child: child,
+                ),
+              );
+            },
             navigatorKey: navigatorKey,
             initialRoute: HomePage.routeName,
             routes: Routes.getRoutes());
