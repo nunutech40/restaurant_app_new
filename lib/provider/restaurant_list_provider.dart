@@ -11,7 +11,7 @@ class RestaurantProvider extends ChangeNotifier {
   final ApiService apiService;
 
   RestaurantProvider({required this.apiService}) {
-    _fetchRestaurantListAll();
+    fetchRestaurantListAll();
   }
 
   late RestaurantResponse _restaurantResult;
@@ -24,7 +24,7 @@ class RestaurantProvider extends ChangeNotifier {
 
   ResultState get state => _state;
 
-  Future<void> _fetchRestaurantListAll() async {
+  Future<void> fetchRestaurantListAll() async {
     try {
       final isConnected = await InternetConnectionChecker().hasConnection;
 

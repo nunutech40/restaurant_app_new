@@ -24,6 +24,16 @@ class RestaurantResponse {
       restaurants: restaurants,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'error': error,
+      'message': message,
+      'count': count,
+      'restaurants':
+          restaurants.map((restaurant) => restaurant.toJson()).toList(),
+    };
+  }
 }
 
 class Restaurant {
