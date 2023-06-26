@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:restaurant_app_new/data/db/database_helper.dart';
 import 'package:restaurant_app_new/data/model/restaurant_list.dart';
 
@@ -12,7 +13,7 @@ class BookMarkProvider extends ChangeNotifier {
     _getBookmarks();
   }
 
-  late ResultState _state;
+  ResultState _state = ResultState.loading; // Initialization done here
   ResultState get state => _state;
 
   String _message = '';
@@ -22,14 +23,31 @@ class BookMarkProvider extends ChangeNotifier {
   List<Restaurant> get bookmarks => _bookmarks;
 
   void _getBookmarks() async {
-    _bookmarks = await databaseHelper.getBookmarks();
-    if (_bookmarks.isNotEmpty) {
-      _state = ResultState.hasData;
-    } else {
-      _state = ResultState.noData;
-      _message = 'Empty Data';
+    try {
+      final isConnected = await InternetConnectionChecker().hasConnection;
+
+      if (!isConnected) {
+        _state = ResultState.error;
+        _message =
+            'No internet connection. Please check your internet connection and try again.';
+        notifyListeners();
+        return;
+      }
+
+      _bookmarks = await databaseHelper.getBookmarks();
+
+      if (_bookmarks.isEmpty) {
+        _state = ResultState.noData;
+        _message = 'Empty Data';
+      } else {
+        _state = ResultState.hasData;
+      }
+    } catch (e) {
+      _state = ResultState.error;
+      _message = 'An error occurred while fetching restaurant data: $e';
+    } finally {
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   void addBookmark(Restaurant restaurant) async {
