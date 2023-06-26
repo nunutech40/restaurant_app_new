@@ -8,10 +8,14 @@ class PreferencesProvider extends ChangeNotifier {
 
   PreferencesProvider({required this.preferencesHelper}) {
     _getTheme();
+    _getDailyNewsPreferences();
   }
 
   bool _isDarkTheme = false;
   bool get isDarkTheme => _isDarkTheme;
+
+  bool _isDailyNewsActive = false;
+  bool get isDailyNewsActive => _isDailyNewsActive;
 
   ThemeData get themeData => _isDarkTheme ? darkTheme : lightTheme;
 
@@ -23,5 +27,15 @@ class PreferencesProvider extends ChangeNotifier {
   void enableDarkTheme(bool value) {
     preferencesHelper.setDarkTheme(value);
     _getTheme();
+  }
+
+  void _getDailyNewsPreferences() async {
+    _isDailyNewsActive = await preferencesHelper.isDailyNewsActive;
+    notifyListeners();
+  }
+
+  void enableDailyNews(bool value) {
+    preferencesHelper.setDailyNews(value);
+    _getDailyNewsPreferences();
   }
 }
