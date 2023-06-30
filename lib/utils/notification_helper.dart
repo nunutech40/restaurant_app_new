@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:restaurant_app_new/data/model/restaurant_list.dart';
@@ -65,7 +66,9 @@ class NotificationHelper {
     );
 
     var titleNotification = "<b>Headline News</b>";
-    var titleNews = restaurantResponse.restaurants[0].name;
+    var random = Random();
+    var getRandomIndex = random.nextInt(restaurantResponse.restaurants.length);
+    var titleNews = restaurantResponse.restaurants[getRandomIndex].name;
 
     await flutterLocalNotificationsPlugin.show(
         0, titleNotification, titleNews, platformChannelSpecifics,
